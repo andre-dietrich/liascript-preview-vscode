@@ -10,14 +10,19 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:liascript-preview.liascript-preview"
+    "onCommand:liascript-preview.liascript-preview",
+    "onCommand:liascript-preview.liascript-test"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "liascript-preview.liascript-preview",
-        "title": "Preview LiaScript"
+        "title": "LiaScript - Preview"
+      },
+      {
+        "command": "liascript-preview.liascript-test",
+        "title": "LiaScript - Test"
       }
     ],
     "keybindings": [

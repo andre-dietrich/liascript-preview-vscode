@@ -29,6 +29,9 @@ export function activate(context: vscode.ExtensionContext) {
         `node node_modules/@liascript/devserver/dist/index.js --live --node_modules ./node_modules -p ${PORT} -i ${vscode.workspace.rootPath}`
       ).then((output) => {
         console.warn(output)
+        vscode.window.showInformationMessage(
+          `LiaScript-DevServer started at: http://localhost:${PORT}`
+        )
       })
 
       const file = vscode.window.activeTextEditor?.document.uri.fsPath?.replace(
@@ -47,11 +50,41 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(preview)
+
+  let test = vscode.commands.registerCommand(
+    'liascript-preview.liascript-test',
+    () => {
+      execShell(
+        `node node_modules/@liascript/devserver/dist/index.js -p ${PORT} -i ${vscode.workspace.rootPath} -t`
+      ).then((output) => {
+        console.warn(output)
+        vscode.window.showInformationMessage(
+          `LiaScript-DevServer started at: http://localhost:${PORT}`
+        )
+      })
+
+      const file = vscode.window.activeTextEditor?.document.uri.fsPath?.replace(
+        vscode.workspace.rootPath || '',
+        ''
+      )
+
+      if (file) {
+        open(
+          `https://liascript.github.io/course/?http://localhost:${PORT}/${file}`
+        )
+      } else {
+        open(`http://localhost:${PORT}`)
+      }
+    }
+  )
+
+  context.subscriptions.push(test)
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
   if (server) {
     process.kill(server.pid)
+    vscode.window.showInformationMessage(`LiaScript-DevServer terminated`)
   }
 }
