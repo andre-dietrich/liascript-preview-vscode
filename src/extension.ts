@@ -68,8 +68,6 @@ export function deactivate() {
 }
 
 function startPreview(previewMode: boolean, liveMode: boolean) {
-  console.warn('sssssssssssssss')
-
   if (!workspace) {
     if (vscode.workspace.workspaceFolders) {
       workspace = vscode.workspace.workspaceFolders[0].uri.path
@@ -83,10 +81,12 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
     }
   }
 
-  const file = vscode.window.activeTextEditor?.document.uri.fsPath?.replace(
-    workspace + '/' || '',
-    ''
-  )
+  const file = vscode.window.activeTextEditor?.document.uri.fsPath
+    ? path.relative(
+        workspace,
+        vscode.window.activeTextEditor?.document.uri.fsPath
+      )
+    : ''
 
   try {
     server.run(PORT, 'localhost', workspace, undefined, liveMode, false, false)
