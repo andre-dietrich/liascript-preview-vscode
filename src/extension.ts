@@ -26,9 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     PORT = port
   })
 
-  if (vscode.workspace.workspaceFolders) {
-    workspace = vscode.workspace.workspaceFolders[0].uri.path
-  }
+  getWorkspace()
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -69,15 +67,13 @@ export function deactivate() {
 
 function startPreview(previewMode: boolean, liveMode: boolean) {
   if (!workspace) {
-    if (vscode.workspace.workspaceFolders) {
-      workspace = vscode.workspace.workspaceFolders[0].uri.path
+    getWorkspace()
 
-      if (!workspace) {
-        vscode.window.showInformationMessage(
-          `LiaScript: No Workspace identified, cannot start DevServer`
-        )
-        return
-      }
+    if (!workspace) {
+      vscode.window.showInformationMessage(
+        `LiaScript: No Workspace identified, cannot start DevServer`
+      )
+      return
     }
   }
 
@@ -112,5 +108,18 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
     }
   } else {
     open(`http://localhost:${PORT}`)
+  }
+}
+
+function getWorkspace() {
+  if (!workspace) {
+    if (vscode.workspace.workspaceFolders) {
+      workspace = vscode.workspace.workspaceFolders[0].uri.path
+      workspace = path.normalize(workspace)
+
+      if (workspace.startsWith('\\')) {
+        workspace = workspace.slice(1)
+      }
+    }
   }
 }
