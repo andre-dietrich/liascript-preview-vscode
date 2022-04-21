@@ -15,6 +15,8 @@ var dirname = ''
 var liascriptPath = ''
 var reloadPath = ''
 
+var serverPointer: any
+
 init(__dirname)
 
 export function init(node_modules?: string) {
@@ -305,4 +307,12 @@ export function run(
   console.log(
     `   - on your network: ${localURL.replace(localURL, ip.address())}`
   )
+
+  serverPointer = server
+}
+
+export function stop() {
+  if (serverPointer) {
+    serverPointer.close()
+  }
 }

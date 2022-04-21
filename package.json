@@ -11,7 +11,8 @@
   ],
   "activationEvents": [
     "onCommand:liascript-preview.liascript-preview",
-    "onCommand:liascript-preview.liascript-test"
+    "onCommand:liascript-preview.liascript-test",
+    "onCommand:liascript-preview.liascript-stop"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -23,6 +24,10 @@
       {
         "command": "liascript-preview.liascript-test",
         "title": "LiaScript - Test"
+      },
+      {
+        "command": "liascript-preview.liascript-stop",
+        "title": "LiaScript - Stop"
       }
     ],
     "keybindings": [

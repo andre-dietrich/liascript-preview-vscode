@@ -28,9 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
           false,
           false
         )
-        console.warn('Server starting')
+        vscode.window.showInformationMessage(
+          `Started LiaScript-DevServer at: http://localhost:${PORT}`
+        )
       } catch (e: any) {
-        console.warn('Server already started: ', e.message)
+        console.log('Server already started: ', e.message)
       }
 
       if (file) {
@@ -62,7 +64,13 @@ export function activate(context: vscode.ExtensionContext) {
           false,
           true
         )
-      } catch (e) {}
+
+        vscode.window.showInformationMessage(
+          `Started LiaScript-DevServer at: http://localhost:${PORT}`
+        )
+      } catch (e: any) {
+        console.log('Server already started: ', e.message)
+      }
 
       if (file) {
         open(
@@ -75,9 +83,20 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(test)
+
+
+  let stop = vscode.commands.registerCommand(
+    'liascript-preview.liascript-stop',
+    () => {
+      deactivate()
+    }
+  )
+
+  context.subscriptions.push(stop)
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-  //server.stop()
+  server.stop()
+  vscode.window.showInformationMessage(`LiaScript-DevServer terminated`)
 }
