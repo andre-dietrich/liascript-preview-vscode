@@ -3,13 +3,19 @@
 import * as vscode from 'vscode'
 import * as server from './lib'
 const open = require('open')
+const portfinder = require('portfinder')
 
-const PORT = 5622
+var PORT = 8080
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   server.init('./node_modules')
+
+  portfinder.getPort(function (err: any, port: number) {
+    console.log('found free port: ', port)
+    PORT = port
+  })
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
