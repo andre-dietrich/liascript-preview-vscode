@@ -1,43 +1,37 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
-import * as cp from 'child_process'
+import * as server from './lib'
 const open = require('open')
 
-const PORT = 5601
-
-var server: cp.ChildProcess | undefined
-
-const execShell = (cmd: string) =>
-  new Promise<string>((resolve, reject) => {
-    console.log('Execute:', cmd)
-    server = cp.exec(cmd, (err, out) => {
-      if (err) {
-        return reject(err)
-      }
-      return resolve(out)
-    })
-  })
+const PORT = 5622
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  server.init('./node_modules')
+
   let preview = vscode.commands.registerCommand(
     'liascript-preview.liascript-preview',
     () => {
-      execShell(
-        `node node_modules/@liascript/devserver/dist/index.js --live --node_modules ./node_modules -p ${PORT} -i ${vscode.workspace.rootPath}`
-      ).then((output) => {
-        console.warn(output)
-        vscode.window.showInformationMessage(
-          `LiaScript-DevServer started at: http://localhost:${PORT}`
-        )
-      })
-
       const file = vscode.window.activeTextEditor?.document.uri.fsPath?.replace(
         vscode.workspace.rootPath || '',
         ''
       )
+      try {
+        server.run(
+          PORT,
+          'localhost',
+          vscode.workspace.rootPath,
+          undefined,
+          true,
+          false,
+          false
+        )
+        console.warn('Server starting')
+      } catch (e: any) {
+        console.warn('Server already started: ', e.message)
+      }
 
       if (file) {
         open(
@@ -54,19 +48,21 @@ export function activate(context: vscode.ExtensionContext) {
   let test = vscode.commands.registerCommand(
     'liascript-preview.liascript-test',
     () => {
-      execShell(
-        `node node_modules/@liascript/devserver/dist/index.js -p ${PORT} -i ${vscode.workspace.rootPath} -t`
-      ).then((output) => {
-        console.warn(output)
-        vscode.window.showInformationMessage(
-          `LiaScript-DevServer started at: http://localhost:${PORT}`
-        )
-      })
-
       const file = vscode.window.activeTextEditor?.document.uri.fsPath?.replace(
         vscode.workspace.rootPath || '',
         ''
       )
+      try {
+        server.run(
+          PORT,
+          'localhost',
+          vscode.workspace.rootPath,
+          undefined,
+          true,
+          false,
+          true
+        )
+      } catch (e) {}
 
       if (file) {
         open(
@@ -83,8 +79,5 @@ export function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-  if (server) {
-    process.kill(server.pid)
-    vscode.window.showInformationMessage(`LiaScript-DevServer terminated`)
-  }
+  //server.stop()
 }
