@@ -11,6 +11,7 @@
   ],
   "activationEvents": [
     "onCommand:liascript-preview.liascript-preview",
+    "onCommand:liascript-preview.liascript-preview-live",
     "onCommand:liascript-preview.liascript-test",
     "onCommand:liascript-preview.liascript-stop"
   ],
@@ -19,22 +20,31 @@
     "commands": [
       {
         "command": "liascript-preview.liascript-preview",
-        "title": "LiaScript - Preview"
+        "title": "LiaScript: Preview your course (start DevServer)"
+      },
+      {
+        "command": "liascript-preview.liascript-preview-live",
+        "title": "LiaScript: Preview your course in live mode (start DevServer)"
       },
       {
         "command": "liascript-preview.liascript-test",
-        "title": "LiaScript - Test"
+        "title": "LiaScript: Test your course on liascript (start DevServer)"
       },
       {
         "command": "liascript-preview.liascript-stop",
-        "title": "LiaScript - Stop"
+        "title": "LiaScript: Stop the DevServer"
       }
     ],
     "keybindings": [
       {
-        "command": "liascript-preview.liascript-preview",
+        "command": "liascript-preview.liascript-preview-live",
         "key": "alt+l",
         "mac": "alt+l"
+      },
+      {
+        "command": "liascript-preview.liascript-preview",
+        "key": "alt+shift+l",
+        "mac": "alt+shift+l"
       }
     ]
   },
