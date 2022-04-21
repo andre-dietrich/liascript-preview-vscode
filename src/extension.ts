@@ -7,6 +7,8 @@ const portfinder = require('portfinder')
 
 var PORT = 8080
 
+var workspace = ''
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -16,6 +18,10 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('found free port: ', port)
     PORT = port
   })
+
+  if (vscode.workspace.workspaceFolders) {
+    workspace = vscode.workspace.workspaceFolders[0].uri.path
+  }
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
@@ -51,28 +57,33 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
   server.stop()
-  vscode.window.showInformationMessage(`LiaScript-DevServer terminated`)
+  vscode.window.showInformationMessage(`LiaScript: Terminated DevServer`)
 }
 
 function startPreview(previewMode: boolean, liveMode: boolean) {
+  if (!workspace) {
+    if (vscode.workspace.workspaceFolders) {
+      workspace = vscode.workspace.workspaceFolders[0].uri.path
+
+      if (!workspace) {
+        vscode.window.showInformationMessage(
+          `LiaScript: No Workspace identified, cannot start DevServer`
+        )
+        return
+      }
+    }
+  }
+
   const file = vscode.window.activeTextEditor?.document.uri.fsPath?.replace(
-    vscode.workspace.rootPath || '',
+    workspace + '/' || '',
     ''
   )
 
   try {
-    server.run(
-      PORT,
-      'localhost',
-      vscode.workspace.rootPath,
-      undefined,
-      liveMode,
-      false,
-      false
-    )
+    server.run(PORT, 'localhost', workspace, undefined, liveMode, false, false)
 
     vscode.window.showInformationMessage(
-      `Started LiaScript-DevServer ${
+      `LiaScript: Started DevServer ${
         liveMode ? '(in live mode)' : ''
       } at: http://localhost:${PORT}`
     )

@@ -2,7 +2,8 @@
   "name": "liascript-preview",
   "displayName": "LiaScript-Preview",
   "description": "Preview LiaScript courses within the browser",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publisher": "LiaScript",
   "repository": {
     "type": "git",
     "url": "https://github.com/andre-dietrich/liascript-preview-vscode.git"
