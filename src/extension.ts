@@ -4,6 +4,7 @@ import * as vscode from 'vscode'
 import * as server from './lib'
 const open = require('open')
 const portfinder = require('portfinder')
+import * as path from 'path'
 
 var PORT = 8080
 
@@ -12,7 +13,13 @@ var workspace = ''
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  server.init('./node_modules')
+  server.init(
+    path.join(
+      vscode.extensions.getExtension('liascript.liascript-preview')
+        ?.extensionPath || '.',
+      'node_modules'
+    )
+  )
 
   portfinder.getPort(function (err: any, port: number) {
     console.log('found free port: ', port)
@@ -61,6 +68,8 @@ export function deactivate() {
 }
 
 function startPreview(previewMode: boolean, liveMode: boolean) {
+  console.warn('sssssssssssssss')
+
   if (!workspace) {
     if (vscode.workspace.workspaceFolders) {
       workspace = vscode.workspace.workspaceFolders[0].uri.path

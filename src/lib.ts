@@ -70,7 +70,7 @@ export function run(
     'hbs',
     handlebars({
       layoutsDir: path.resolve(
-        __dirname + '/../node_modules/@liascript/devserver/views/layouts'
+        path.join(dirname, '@liascript/devserver/views/layouts')
       ),
       defaultLayout: 'main',
       extname: 'hbs',
@@ -78,7 +78,7 @@ export function run(
   )
   app.set(
     'views',
-    path.resolve(__dirname + '/../node_modules/@liascript/devserver/views')
+    path.resolve(path.join(dirname, '@liascript/devserver/views'))
   )
 
   app.get('/', function (req: express.Request, res: express.Response) {
