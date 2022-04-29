@@ -3,7 +3,7 @@
 This will start the [development](https://www.npmjs.com/package/@liascript/devserver) server for [LiaScript](https://LiaScript.github.io) directly from VSCode. For more information, checkout the [documentation](https://liascript.github.io/course/?https://raw.githubusercontent.com/liaScript/docs/master/README.md#1) or checkout our [YouTube-Channel](https://www.youtube.com/channel/UCyiTe2GkW_u05HSdvUblGYg).
 
 
-![preview](./preview.gif)
+[preview.gif](https://github.com/andre-dietrich/liascript-preview-vscode/raw/main/preview.gif)
 
 ## Features
 
