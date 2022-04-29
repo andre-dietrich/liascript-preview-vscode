@@ -1,10 +1,11 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
-import * as server from './lib'
+import * as path from 'path'
+
 const open = require('open')
 const portfinder = require('portfinder')
-import * as path from 'path'
+import server = require('@liascript/devserver/dist/lib.js')
 
 var PORT = 8080
 
@@ -13,12 +14,13 @@ var workspace = ''
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  const base =
+    vscode.extensions.getExtension('liascript.liascript-preview')
+      ?.extensionPath || '.'
+
   server.init(
-    path.join(
-      vscode.extensions.getExtension('liascript.liascript-preview')
-        ?.extensionPath || '.',
-      'node_modules'
-    )
+    path.join(base, 'node_modules/@liascript/devserver'),
+    path.join(base, 'node_modules')
   )
 
   portfinder.getPort(function (err: any, port: number) {
@@ -85,7 +87,15 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
     : ''
 
   try {
-    server.run(PORT, 'localhost', workspace, undefined, liveMode, false, false)
+    server.start(
+      PORT,
+      'localhost',
+      workspace,
+      undefined,
+      liveMode,
+      false,
+      false
+    )
 
     vscode.window.showInformationMessage(
       `LiaScript: Started DevServer ${
