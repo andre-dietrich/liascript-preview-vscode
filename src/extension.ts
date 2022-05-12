@@ -11,6 +11,17 @@ var PORT = 8080
 
 var workspace = ''
 
+function lineGoto(line: number, filename: string) {
+  let editor = vscode.window.activeTextEditor
+  if (editor) {
+    if (workspace + filename == editor.document.fileName) {
+      let range = editor.document.lineAt(line).range
+      editor.selection = new vscode.Selection(range.start, range.end)
+      editor.revealRange(range)
+    }
+  }
+}
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -94,7 +105,8 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
       undefined,
       liveMode,
       false,
-      false
+      false,
+      lineGoto
     )
 
     vscode.window.showInformationMessage(
