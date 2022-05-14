@@ -2,7 +2,7 @@
   "name": "liascript-preview",
   "displayName": "LiaScript-Preview",
   "description": "Preview LiaScript courses within the browser",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "publisher": "LiaScript",
   "repository": {
     "type": "git",
