@@ -71,28 +71,6 @@ export function activate(context: vscode.ExtensionContext) {
     })
   )
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('liascript-preview.liascript-goto', () => {
-      const filename = vscode.window.activeTextEditor?.document.uri.fsPath
-        ? path
-            .relative(
-              workspace,
-              vscode.window.activeTextEditor?.document.uri.fsPath
-            )
-            .replace(workspace, '')
-        : ''
-
-      if (filename) {
-        const line = vscode.window.activeTextEditor?.selection.active.line
-        if (line) {
-          try {
-            server.gotoLine(line, '/' + filename)
-          } catch (e) {}
-        }
-      }
-    })
-  )
-
   vscode.languages.registerCodeActionsProvider('markdown', {
     provideCodeActions(doc, pos, tok) {
       const filename = doc.uri.fsPath

@@ -24,4 +24,4 @@ Currently there are 5 different options, which you can either activate by \[ctrl
 * Navigation:
 
   * from Preview to file: Simply by double-clicking onto an element on the slide
-  * from cursor position to Preview: hit [alt+g]
+  * from cursor position to Preview: \[ctrl+click\] ... which means, simply press control and click with the mouse onto the position in the editor, which you want see at the preview

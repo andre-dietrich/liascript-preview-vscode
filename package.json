@@ -19,8 +19,7 @@
     "onCommand:liascript-preview.liascript-preview",
     "onCommand:liascript-preview.liascript-preview-live",
     "onCommand:liascript-preview.liascript-test",
-    "onCommand:liascript-preview.liascript-stop",
-    "onCommand:liascript-preview.liascript-goto"
+    "onCommand:liascript-preview.liascript-stop"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -40,10 +39,6 @@
       {
         "command": "liascript-preview.liascript-stop",
         "title": "LiaScript: Stop the DevServer"
-      },
-      {
-        "command": "liascript-preview.liascript-goto",
-        "title": "LiaScript: Goto cursor position"
       }
     ],
     "keybindings": [
@@ -61,11 +56,6 @@
         "command": "liascript-preview.liascript-preview-stop",
         "key": "alt+l+c",
         "mac": "alt+l+c"
-      },
-      {
-        "command": "liascript-preview.liascript-goto",
-        "key": "alt+g",
-        "mac": "alt+g"
       }
     ]
   },
