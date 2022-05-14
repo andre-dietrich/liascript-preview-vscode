@@ -93,14 +93,25 @@ export function activate(context: vscode.ExtensionContext) {
     })
   )
 
-  /*vscode.languages.registerHoverProvider('markdown', {
-    provideHover(document, position, token) {
-      return {
-        contents: ['Hover Content'],
+  vscode.languages.registerCodeActionsProvider('markdown', {
+    provideCodeActions(doc, pos, tok) {
+      const filename = doc.uri.fsPath
+        ? path.relative(workspace, doc.uri.fsPath).replace(workspace, '')
+        : ''
+
+      if (filename) {
+        const line = pos.start.line
+
+        if (line) {
+          try {
+            server.gotoLine(line + 1, '/' + filename)
+          } catch (e) {}
+        }
       }
+
+      return undefined
     },
   })
-  */
 }
 
 // this method is called when your extension is deactivated
