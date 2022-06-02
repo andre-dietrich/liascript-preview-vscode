@@ -2,7 +2,7 @@
   "name": "liascript-preview",
   "displayName": "LiaScript-Preview",
   "description": "Preview LiaScript courses within the browser",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "publisher": "LiaScript",
   "repository": {
     "type": "git",
@@ -84,6 +84,7 @@
   },
   "dependencies": {
     "@liascript/devserver": "^1.1.1--0.10.11",
+    "@liascript/editor": "^1.1.0--0.10.12",
     "open": "^8.4.0",
     "portfinder": "^1.0.28"
   }
