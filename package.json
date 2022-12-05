@@ -83,7 +83,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "@liascript/devserver": "^1.1.2--0.10.24",
+    "@liascript/devserver": "^1.1.2--0.10.25",
     "open": "^8.4.0",
     "portfinder": "^1.0.28"
   }
