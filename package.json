@@ -45,17 +45,17 @@
       {
         "command": "liascript-preview.liascript-preview-live",
         "key": "alt+l",
-        "mac": "alt+l"
+        "mac": "cmd+l"
       },
       {
         "command": "liascript-preview.liascript-preview",
         "key": "alt+shift+l",
-        "mac": "alt+shift+l"
+        "mac": "cmd+shift+l"
       },
       {
         "command": "liascript-preview.liascript-preview-stop",
         "key": "alt+l+c",
-        "mac": "alt+l+c"
+        "mac": "cmd+l+c"
       }
     ]
   },
