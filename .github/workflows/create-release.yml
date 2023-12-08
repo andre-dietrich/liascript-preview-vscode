@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Tag Number
+        id: tag
+        run: echo "::set-output name=tag_number::$(echo ${{ github.ref }} | sed -e 's/refs\/tags\///g')"
       - name: Checkout Code
         uses: actions/checkout@v2
       - name: Setup Node
@@ -39,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./liascript-preview-${{ github.ref }}.vsix
-          asset_name: liascript-preview-${{ github.ref }}.vsix
+          asset_path: ./liascript-preview-${{ steps.tag.outputs.tag_number }}.vsix
+          asset_name: liascript-preview-${{ steps.tag.outputs.tag_number }}.vsix
           asset_content_type: application/zip
