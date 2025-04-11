@@ -156,12 +156,16 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
 function getWorkspace() {
   if (!workspace) {
     if (vscode.workspace.workspaceFolders) {
-      workspace = vscode.workspace.workspaceFolders[0].uri.path
+      // Use fsPath instead of path for consistent handling
+      workspace = vscode.workspace.workspaceFolders[0].uri.fsPath
       workspace = path.normalize(workspace)
 
+      // Handle windows backslash if present
       if (workspace.startsWith('\\')) {
         workspace = workspace.slice(1)
       }
+
+      console.log('Workspace path:', workspace)
     }
   }
 }
