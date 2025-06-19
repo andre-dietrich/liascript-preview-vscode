@@ -110,12 +110,15 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
     }
   }
 
-  const file = vscode.window.activeTextEditor?.document.uri.fsPath
+  let file = vscode.window.activeTextEditor?.document.uri.fsPath
     ? path.relative(
         workspace,
         vscode.window.activeTextEditor?.document.uri.fsPath
       )
     : ''
+
+  // fix backslash issue on windows systems
+  file = file.replace(/\\/g, '/')
 
   try {
     server.start(
