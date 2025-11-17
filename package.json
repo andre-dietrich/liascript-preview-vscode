@@ -12,7 +12,16 @@
     "vscode": "^1.66.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Programming Languages"
+  ],
+  "tags": [
+    "liascript",
+    "markdown",
+    "preview",
+    "education",
+    "e-learning",
+    "oer"
   ],
   "icon": "icon.png",
   "activationEvents": [
