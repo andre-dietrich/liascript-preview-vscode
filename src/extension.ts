@@ -14,7 +14,12 @@ var workspace = ''
 function lineGoto(line: number, filename: string) {
   let editor = vscode.window.activeTextEditor
   if (editor) {
-    if (workspace + filename == editor.document.fileName) {
+    // Normalize both paths for comparison
+    const fullPath = path.join(workspace, filename)
+    const normalizedFullPath = path.normalize(fullPath)
+    const normalizedEditorPath = path.normalize(editor.document.fileName)
+
+    if (normalizedFullPath === normalizedEditorPath) {
       let range = editor.document.lineAt(line).range
       editor.selection = new vscode.Selection(range.start, range.end)
       editor.revealRange(range)
