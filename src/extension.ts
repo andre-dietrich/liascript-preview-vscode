@@ -65,6 +65,15 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(
+    vscode.commands.registerCommand(
+      'liascript-preview.liascript-preview-simple',
+      () => {
+        startPreview(true, true, true)
+      }
+    )
+  )
+
+  context.subscriptions.push(
     vscode.commands.registerCommand('liascript-preview.liascript-test', () => {
       startPreview(false, false)
     })
@@ -76,25 +85,25 @@ export function activate(context: vscode.ExtensionContext) {
     })
   )
 
-  vscode.languages.registerCodeActionsProvider('markdown', {
-    provideCodeActions(doc, pos, tok) {
-      const filename = doc.uri.fsPath
-        ? path.relative(workspace, doc.uri.fsPath).replace(workspace, '')
-        : ''
+  context.subscriptions.push(
+    vscode.languages.registerDefinitionProvider('markdown', {
+      provideDefinition(document, position, token) {
+        const filename = document.uri.fsPath
+          ? path.relative(workspace, document.uri.fsPath).replace(workspace, '')
+          : ''
 
-      if (filename) {
-        const line = pos.start.line
-
-        if (line) {
+        if (filename) {
+          const line = position.line
           try {
             server.gotoLine(line + 1, '/' + filename)
           } catch (e) {}
         }
-      }
 
-      return undefined
-    },
-  })
+        // No actual definition to return, just trigger the side effect
+        return undefined
+      },
+    })
+  )
 }
 
 // this method is called when your extension is deactivated
@@ -103,7 +112,11 @@ export function deactivate() {
   vscode.window.showInformationMessage(`LiaScript: Terminated DevServer`)
 }
 
-function startPreview(previewMode: boolean, liveMode: boolean) {
+function startPreview(
+  previewMode: boolean,
+  liveMode: boolean,
+  simpleMode: boolean = false
+) {
   if (!workspace) {
     getWorkspace()
 
@@ -148,16 +161,47 @@ function startPreview(previewMode: boolean, liveMode: boolean) {
 
   if (file) {
     if (previewMode) {
-      open(
-        `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`
-      )
+      if (simpleMode) {
+        // Try to open beside, fallback: create a new group first
+        vscode.commands
+          .executeCommand('workbench.action.splitEditorRight')
+          .then(() => {
+            vscode.commands.executeCommand(
+              'simpleBrowser.show',
+              `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`,
+              {
+                viewColumn: vscode.ViewColumn.Beside,
+                preserveFocus: true,
+              }
+            )
+          })
+      } else {
+        open(
+          `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`
+        )
+      }
     } else {
       open(
         `https://liascript.github.io/course/?http://localhost:${PORT}/${file}`
       )
     }
   } else {
-    open(`http://localhost:${PORT}`)
+    if (simpleMode) {
+      vscode.commands
+        .executeCommand('workbench.action.splitEditorRight')
+        .then(() => {
+          vscode.commands.executeCommand(
+            'simpleBrowser.show',
+            `http://localhost:${PORT}`,
+            {
+              viewColumn: vscode.ViewColumn.Beside,
+              preserveFocus: true,
+            }
+          )
+        })
+    } else {
+      open(`http://localhost:${PORT}`)
+    }
   }
 }
 

@@ -27,6 +27,7 @@
   "activationEvents": [
     "onCommand:liascript-preview.liascript-preview",
     "onCommand:liascript-preview.liascript-preview-live",
+    "onCommand:liascript-preview.liascript-preview-simple",
     "onCommand:liascript-preview.liascript-test",
     "onCommand:liascript-preview.liascript-stop"
   ],
@@ -42,6 +43,10 @@
         "title": "LiaScript: Preview your course in live mode (start DevServer)"
       },
       {
+        "command": "liascript-preview.liascript-preview-simple",
+        "title": "LiaScript: Preview in VSCode simple-browser (start DevServer)"
+      },
+      {
         "command": "liascript-preview.liascript-test",
         "title": "LiaScript: Test your course on liascript (start DevServer)"
       },
@@ -55,6 +60,11 @@
         "command": "liascript-preview.liascript-preview-live",
         "key": "alt+l",
         "mac": "cmd+l"
+      },
+      {
+        "command": "liascript-preview.liascript-preview-simple",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+option+l"
       },
       {
         "command": "liascript-preview.liascript-preview",
