@@ -90,20 +90,23 @@ export function activate(context: vscode.ExtensionContext) {
       provideDefinition(document, position, token) {
         const filename = document.uri.fsPath
           ? path.relative(workspace, document.uri.fsPath).replace(workspace, '')
-          : ''
+          : '';
 
         if (filename) {
-          const line = position.line
+          const line = position.line;
           try {
-            server.gotoLine(line + 1, '/' + filename)
+            server.gotoLine(line + 1, '/' + filename);
           } catch (e) {}
-        }
 
-        // No actual definition to return, just trigger the side effect
-        return undefined
+          // Always return a Location at the current position to enable Ctrl+Click
+          return [
+            new vscode.Location(document.uri, position)
+          ];
+        }
+        return undefined;
       },
     })
-  )
+  );
 }
 
 // this method is called when your extension is deactivated
@@ -163,18 +166,15 @@ function startPreview(
     if (previewMode) {
       if (simpleMode) {
         // Try to open beside, fallback: create a new group first
-        vscode.commands
-          .executeCommand('workbench.action.splitEditorRight')
-          .then(() => {
-            vscode.commands.executeCommand(
-              'simpleBrowser.show',
-              `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`,
-              {
-                viewColumn: vscode.ViewColumn.Beside,
-                preserveFocus: true,
-              }
-            )
-          })
+
+        vscode.commands.executeCommand(
+          'simpleBrowser.show',
+          `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`,
+          {
+            viewColumn: vscode.ViewColumn.Beside,
+            preserveFocus: true,
+          }
+        )
       } else {
         open(
           `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`
@@ -187,18 +187,14 @@ function startPreview(
     }
   } else {
     if (simpleMode) {
-      vscode.commands
-        .executeCommand('workbench.action.splitEditorRight')
-        .then(() => {
-          vscode.commands.executeCommand(
-            'simpleBrowser.show',
-            `http://localhost:${PORT}`,
-            {
-              viewColumn: vscode.ViewColumn.Beside,
-              preserveFocus: true,
-            }
-          )
-        })
+      vscode.commands.executeCommand(
+        'simpleBrowser.show',
+        `http://localhost:${PORT}`,
+        {
+          viewColumn: vscode.ViewColumn.Beside,
+          preserveFocus: true,
+        }
+      )
     } else {
       open(`http://localhost:${PORT}`)
     }
