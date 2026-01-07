@@ -90,23 +90,21 @@ export function activate(context: vscode.ExtensionContext) {
       provideDefinition(document, position, token) {
         const filename = document.uri.fsPath
           ? path.relative(workspace, document.uri.fsPath).replace(workspace, '')
-          : '';
+          : ''
 
         if (filename) {
-          const line = position.line;
+          const line = position.line
           try {
-            server.gotoLine(line + 1, '/' + filename);
+            server.gotoLine(line + 1, '/' + filename)
           } catch (e) {}
 
           // Always return a Location at the current position to enable Ctrl+Click
-          return [
-            new vscode.Location(document.uri, position)
-          ];
+          return [new vscode.Location(document.uri, position)]
         }
-        return undefined;
+        return undefined
       },
     })
-  );
+  )
 }
 
 // this method is called when your extension is deactivated
@@ -165,16 +163,34 @@ function startPreview(
   if (file) {
     if (previewMode) {
       if (simpleMode) {
-        // Try to open beside, fallback: create a new group first
-
-        vscode.commands.executeCommand(
-          'simpleBrowser.show',
-          `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`,
-          {
-            viewColumn: vscode.ViewColumn.Beside,
-            preserveFocus: true,
-          }
-        )
+        // Create an empty group on the right (doesn't duplicate the current editor)
+        // and open the Simple Browser explicitly in that group.
+        vscode.commands
+          .executeCommand('workbench.action.newGroupRight')
+          .then(
+            () => undefined,
+            () => undefined
+          )
+          .then(() =>
+            vscode.commands.executeCommand(
+              'simpleBrowser.show',
+              `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`,
+              {
+                viewColumn: vscode.ViewColumn.Two,
+                preserveFocus: true,
+              }
+            )
+          )
+          .then(
+            () =>
+              vscode.commands.executeCommand(
+                'workbench.action.focusFirstEditorGroup'
+              ),
+            () =>
+              vscode.commands.executeCommand(
+                'workbench.action.focusFirstEditorGroup'
+              )
+          )
       } else {
         open(
           `http://localhost:${PORT}/liascript/index.html?http://localhost:${PORT}/${file}`
@@ -187,14 +203,32 @@ function startPreview(
     }
   } else {
     if (simpleMode) {
-      vscode.commands.executeCommand(
-        'simpleBrowser.show',
-        `http://localhost:${PORT}`,
-        {
-          viewColumn: vscode.ViewColumn.Beside,
-          preserveFocus: true,
-        }
-      )
+      vscode.commands
+        .executeCommand('workbench.action.newGroupRight')
+        .then(
+          () => undefined,
+          () => undefined
+        )
+        .then(() =>
+          vscode.commands.executeCommand(
+            'simpleBrowser.show',
+            `http://localhost:${PORT}`,
+            {
+              viewColumn: vscode.ViewColumn.Two,
+              preserveFocus: true,
+            }
+          )
+        )
+        .then(
+          () =>
+            vscode.commands.executeCommand(
+              'workbench.action.focusFirstEditorGroup'
+            ),
+          () =>
+            vscode.commands.executeCommand(
+              'workbench.action.focusFirstEditorGroup'
+            )
+        )
     } else {
       open(`http://localhost:${PORT}`)
     }
