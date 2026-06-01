@@ -8,6 +8,7 @@ const portfinder = require('portfinder')
 import server = require('@liascript/devserver/dist/lib.js')
 
 var PORT = 8080
+var serverStarted = false
 
 var workspace = ''
 
@@ -38,11 +39,6 @@ export function activate(context: vscode.ExtensionContext) {
     path.join(base, 'node_modules/@liascript/devserver'),
     path.join(base, 'node_modules')
   )
-
-  portfinder.getPort(function (err: any, port: number) {
-    console.log('found free port: ', port)
-    PORT = port
-  })
 
   getWorkspace()
 
@@ -96,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
           const line = position.line
           try {
             server.gotoLine(line + 1, '/' + filename)
-          } catch (e) {}
+          } catch (e) { }
 
           // Always return a Location at the current position to enable Ctrl+Click
           return [new vscode.Location(document.uri, position)]
@@ -110,10 +106,11 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
   server.stop()
+  serverStarted = false
   vscode.window.showInformationMessage(`LiaScript: Terminated DevServer`)
 }
 
-function startPreview(
+async function startPreview(
   previewMode: boolean,
   liveMode: boolean,
   simpleMode: boolean = false
@@ -131,33 +128,48 @@ function startPreview(
 
   let file = vscode.window.activeTextEditor?.document.uri.fsPath
     ? path.relative(
-        workspace,
-        vscode.window.activeTextEditor?.document.uri.fsPath
-      )
+      workspace,
+      vscode.window.activeTextEditor?.document.uri.fsPath
+    )
     : ''
 
   // fix backslash issue on windows systems
   file = file.replace(/\\/g, '/')
 
-  try {
-    server.start(
-      PORT,
-      'localhost',
-      workspace,
-      undefined,
-      liveMode,
-      false,
-      false,
-      lineGoto
-    )
+  if (!serverStarted) {
+    try {
+      PORT = await new Promise<number>((resolve, reject) => {
+        portfinder.getPort((err: any, port: number) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(port)
+          }
+        })
+      })
 
-    vscode.window.showInformationMessage(
-      `LiaScript: Started DevServer ${
-        liveMode ? '(in live mode)' : ''
-      } at: http://localhost:${PORT}`
-    )
-  } catch (e: any) {
-    console.log('Server already started: ', e.message)
+      server.start(
+        PORT,
+        'localhost',
+        workspace,
+        undefined,
+        liveMode,
+        false,
+        false,
+        lineGoto
+      )
+
+      serverStarted = true
+      vscode.window.showInformationMessage(
+        `LiaScript: Started DevServer ${liveMode ? '(in live mode)' : ''
+        } at: http://localhost:${PORT}`
+      )
+    } catch (e: any) {
+      vscode.window.showErrorMessage(
+        `LiaScript: Failed to start DevServer - ${e.message}`
+      )
+      return
+    }
   }
 
   if (file) {
