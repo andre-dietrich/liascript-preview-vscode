@@ -252,6 +252,15 @@ function getWorkspace() {
     if (vscode.workspace.workspaceFolders) {
       // Use fsPath instead of path for consistent handling
       workspace = vscode.workspace.workspaceFolders[0].uri.fsPath
+    } else if (vscode.window.activeTextEditor) {
+      // No folder/workspace open (single-file mode): fall back to the
+      // directory of the currently active file as the served root
+      workspace = path.dirname(
+        vscode.window.activeTextEditor.document.uri.fsPath
+      )
+    }
+
+    if (workspace) {
       workspace = path.normalize(workspace)
 
       // Handle windows backslash if present
